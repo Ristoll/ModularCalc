@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>ModularCalc</title>
+</head>
+<body>
+    <div id="input-area">
+        <label for="modulus">Модуль: </label>
+        <input type="number" id="modulus" min="1">
+
+        <label for="first-num">A: </label>
+        <input type="number" id="first-num">
+
+        <label for="second-num">B: </label>
+        <input type="number" id="second-num">
+        
+        <button id="clear-btn">Очистити поля</button>
+    </div>
+    <p id="error-message"></p>
+    
+    <div id="operation-btns">
+        <div id="common-btns">
+            <button id="addition-btn">+</button>
+            <button id="subtraction-btn">-</button>
+            <button id="multiplication-btn">*</button>
+            <button id="devision-btn">/</button>
+            <button id="pow-btn">^</button>
+        </div>
+        <div id="inversion-btns">
+            <button id="add-inverse-btn">-a</button>
+            <button id="mult-inverse-btn">1/a</button>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>Операція</th>
+                <th>Результат</th>
+            </tr>
+        </thead>
+        <tbody id="result-container">
+        </tbody>
+    </table>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+#input-area {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#operation-btns {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#common-btns, #inversion-btns{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
