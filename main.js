@@ -10,11 +10,14 @@ const clearBtn = document.getElementById("clear-btn");
 const additionBtn = document.getElementById("addition-btn");
 const subtractionBtn = document.getElementById("subtraction-btn");
 const multiplicationBtn = document.getElementById("multiplication-btn");
-const devisionBtn = document.getElementById("devision-btn");
 const powBtn = document.getElementById("pow-btn");
 const addInverseBtn = document.getElementById("add-inverse-btn");
-const multInverseBtn = document.getElementById("mult-inverse-btn");
-
+const nsdBtn = document.getElementById("nsd-btn");
+const primeBtn = document.getElementById("prime-btn");
+const primeAmountBtn = document.getElementById("prime-amount-btn");
+const multiplicationInverseBtn = document.getElementById("mult-inverse-btn");
+const isPrimeBtn = document.getElementById("is-prime-btn");
+const largestPrimeBtn = document.getElementById("largest-prime-btn")
 clearBtn.addEventListener("click", () => {
     modulus.value = null;
     modulus.textContent = null;
@@ -27,39 +30,80 @@ clearBtn.addEventListener("click", () => {
 
 additionBtn.addEventListener("click", () => {
     const {a, b, m} = getValues();
-    if (!validateValues()) return;
+    if (!validateValues() || !validateValueForModulOp()) return;
     const result = operations.modularAddition(a, b, m);
     logger.log(a, b, "+", result);
 })
 
 subtractionBtn.addEventListener("click", () => {
     const {a, b, m} = getValues();
-    if (!validateValues()) return;
+    if (!validateValues() || !validateValueForModulOp()) return;
     const result = operations.modularSubtraction(a, b, m);
     logger.log(a, b, "-", result);
 })
 
 multiplicationBtn.addEventListener("click", () => {
     const {a, b, m} = getValues();
-    if (!validateValues()) return;
+    if (!validateValues() || !validateValueForModulOp()) return;
     const result = operations.modularMultiplication(a, b, m);
     logger.log(a, b, "*", result);
 })
 
 powBtn.addEventListener("click", () => {
     const {a, b, m} = getValues();
-    if (!validateValues()) return;
+    if (!validateValues() || !validateValueForModulOp()) return;
     const result = operations.modularPow(a, b, m);
     logger.log(a, b, "^", result);
 })
 
 addInverseBtn.addEventListener("click", () => {
     const {a, m} = getValue();
-    if (!validateValue()) return;
+    if (!validateValue() || !validateValueForModulOp()) return;
     const result = operations.additionInverse(a, m);
     logger.log(a, null, "-a", result);
 })
 
+nsdBtn.addEventListener("click", () => {
+    const {a, b} = getValues();
+    if (!validateValues()) return;
+    const result = operations.getNSD(a, b);
+    logger.log(a, b, "nsd", result);
+})
+
+primeBtn.addEventListener("click", () => {
+    const a = Number(firstNum.value);
+    if(!validateValue()) return;
+    const result = operations.generatePrime(a);
+    logger.log(a, null, "prime", result);
+})
+
+primeAmountBtn.addEventListener("click", () => {
+    const a = Number(firstNum.value);
+    if(!validateValue()) return;
+    const result = operations.getPrimeNumAmount(a);
+    logger.log(a, null, "primeAmount", result);
+})
+
+multiplicationInverseBtn.addEventListener("click", () => {
+    const {a, m} = getValue();
+    if (!validateValue() || !validateValueForModulOp()) return;
+    const result = operations.multiplicationInverse(a, m);
+    logger.log(a, null, "1/a", result);
+})
+
+isPrimeBtn.addEventListener("click", () => {
+    const a = Number(firstNum.value);
+    if(!validateValue()) return;
+    const result = operations.isPrime(a);
+    logger.log(a, null, "isPrime", result);
+})
+
+largestPrimeBtn.addEventListener("click", () => {
+    const a = Number(firstNum.value);
+    if(!validateValue()) return;
+    const result = operations.generatePrime(a);
+    logger.log(a, null, "largestPrime", result);
+})
 function getValues() {
     return {
         a: Number(firstNum.value),
@@ -76,13 +120,8 @@ function getValue() {
 }
 
 function validateValues() {
-    if (firstNum.value === "" || secondNum.value === "" || modulus.value === "") {
+    if (firstNum.value === "" || secondNum.value === "") {
         errorMessage.textContent = "Заповніть всі поля.";
-        return false;
-    }
-
-    if (Number(modulus.value) <= 0) {
-        errorMessage.textContent = "Модуль повинен бути більшим за 0.";
         return false;
     }
 
@@ -91,16 +130,20 @@ function validateValues() {
 }
 
 function validateValue() {
-    if (firstNum.value === "" || modulus.value === "") {
+    if (firstNum.value === "") {
         errorMessage.textContent = "Введіть A та модуль.";
         return false;
     }
 
+    errorMessage.textContent = "";
+    return true;
+}
+
+function validateValueForModulOp() {
     if (Number(modulus.value) <= 0) {
         errorMessage.textContent = "Модуль повинен бути більшим за 0.";
         return false;
     }
 
-    errorMessage.textContent = "";
     return true;
 }
