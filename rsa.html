@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор RSA</title>
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="./rsa.js" defer></script>
+</head>
+
+<body>
+    <main>
+        <section class = blocks>
+            <section class="block">
+                <p>Шифрування</p>
+
+                <label for="encrypt-word">Слово (3 різні літери)</label>
+                <input id="encrypt-word" type="text" maxlength="3"
+                    placeholder="Наприклад, let">
+
+                <label for="encrypt-alphabet">Алфавіт</label>
+                <select id="encrypt-alphabet">
+                    <option value="en">Англійський</option>
+                    <option value="uk">Український</option>
+                </select>
+
+                <label for="encrypt-modulus">Модуль шифрування m</label>
+                <input id="encrypt-modulus" type="number" min="2">
+
+                <label for="encrypt-key">Відкритий ключ y</label>
+                <input id="encrypt-key" type="number" min="1">
+
+                <button id="encrypt-btn">Зашифрувати</button>
+                <p id="encrypt-error" role="alert"></p>
+
+                <p>Результат шифрування</p>
+                <p>Вихідне слово: <output id="original-word">—</output></p>
+                <p>Числовий код: <output id="encoded-word">—</output></p>
+                <p>Зашифрований код: <output id="encrypted-code">—</output></p>
+            </section>
+
+            <section class="block">
+                <p>Дешифрування</p>
+
+                <label for="decrypt-code">Зашифрований числовий код</label>
+                <textarea id="decrypt-code"
+                        placeholder="Наприклад: 123, 456, 789"></textarea>
+
+                <label for="decrypt-alphabet">Алфавіт</label>
+                <select id="decrypt-alphabet">
+                    <option value="en">Англійський</option>
+                    <option value="uk">Український</option>
+                </select>
+
+                <label for="decrypt-modulus">Модуль шифрування m</label>
+                <input id="decrypt-modulus" type="number" min="2">
+
+                <label for="decrypt-key">Закритий ключ x</label>
+                <input id="decrypt-key" type="number" min="1">
+
+                <button id="decrypt-btn">Розшифрувати</button>
+                <p id="decrypt-error" role="alert"></p>
+
+                <p>Результат дешифрування</p>
+                <p>Розшифрований код: <output id="decoded-code">—</output></p>
+                <p>Відновлене слово: <output id="decoded-word">—</output></p>
+            </section>
+        </section>
+    </main>
+</body>
+</html>

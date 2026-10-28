@@ -100,42 +100,6 @@ export function getPrimeNumAmount(number) {
     return result;
 }
 
-/*export function getPrimeNumAmount(number) {
-    if (!Number.isInteger(number) || number < 1) { 
-        throw new Error("Число має бути натуральним"); 
-    }
-    if (number === 1) { 
-        return 1; 
-    }
-
-    if(isPrime(number)) {
-        return number-1;
-    }
-    const a = generatePrime(number);
-    const b = number/a;
-    if(Number.isInteger(b) && isPrime(b)){
-        if(getNSD(a,b) == 1) {
-            return (a-1)*(b-1);
-        }
-    }
-    const power = findPower(number);
-    if(power != null){
-        if(isPrime(power.base)) {
-            return (power.base - 1) * Math.pow(power.base,power.exponent - 1);
-        }
-    }
-
-    const factors = primeFactorization(number);
-
-    let result = 1;
-
-    factors.forEach((power, base) => {
-        result *= (base - 1) * Math.pow(base, power - 1);
-    });
-
-    return result;
-}*/
-
 export function multiplicationInverse(a, p) {
     if (!Number.isInteger(a) || !Number.isInteger(p) || p < 2) {
         throw new Error("Аргументи мають бути цілими числами, p >= 2");
@@ -182,22 +146,6 @@ function primeFactorization(n) {
 
     return primeFactors;
 }
-
-/*function findPower(n) {
-    if (!Number.isInteger(n) || n < 2) {
-        return null;
-    }
-
-    for (let k = 2; k <= Math.log2(n); k++) {
-        const p = Math.round(n ** (1 / k));
-
-        if (p ** k === n) {
-            return { base: p, exponent: k };
-        }
-    }
-
-    return null;
-}*/
 
 function modPow(base, exponent, modulus) {
     let result = 1;
@@ -309,6 +257,114 @@ export function diffieHellman(p, g, A, B) {
         keyB,
         keysMatch: keyA === keyB
     };
+}
+
+export function getRsaKeyPairs(n) {
+    if (!Number.isInteger(n) || n < 2) {
+        throw new Error("Модуль n має бути цілим числом >= 2");
+    }
+
+    const pairs = [];
+
+    for (let x = 2; x < n; x++) {
+        if (getNSD(x, n) !== 1) {
+            continue;
+        }
+
+        const y = multiplicationInverse(x, n);
+
+        if (x < y) {
+            pairs.push({
+                privateKey: x,
+                publicKey: y
+            });
+        }
+    }
+
+    return {
+        pairs,
+        count: pairs.length
+    };
+}
+
+const alphabets = {
+    en: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    uk: "АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ"
+};
+
+export function rsaEncodeWord(word, alphabet = "en") {
+    const letters = alphabets[alphabet];
+
+    if (!letters) {
+        throw new Error("Оберіть англійський або український алфавіт.");
+    }
+
+    const normalizedWord = word.toUpperCase();
+    const characters = [...normalizedWord];
+
+    if (characters.length !== 3) {
+        throw new Error("Слово повинно містити рівно 3 літери.");
+    }
+
+    if (characters.some(letter => !letters.includes(letter))) {
+        throw new Error("Слово містить недопустимі літери.");
+    }
+
+    if (new Set(characters).size !== 3) {
+        throw new Error("Усі три літери повинні бути різними.");
+    }
+
+    return characters.map(letter => letters.indexOf(letter) + 1);
+}
+
+export function rsaEncryptNumbers(numbers, y, m) {
+    validateRsaParameters(y, m);
+
+    return numbers.map(number => {
+        if (!Number.isSafeInteger(number) || number < 1 || number >= m) {
+            throw new Error("Некоректний числовий код для шифрування.");
+        }
+
+        return modularPow(number, y, m);
+    });
+}
+
+export function rsaDecryptNumbers(numbers, x, m) {
+    validateRsaParameters(x, m);
+
+    return numbers.map(number => {
+        if (!Number.isSafeInteger(number) || number < 0 || number >= m) {
+            throw new Error("Некоректне число шифротексту.");
+        }
+
+        return modularPow(number, x, m);
+    });
+}
+
+export function rsaDecodeWord(numbers, alphabet = "en") {
+    const letters = alphabets[alphabet];
+
+    if (!letters) {
+        throw new Error("Оберіть англійський або український алфавіт.");
+    }
+
+    return numbers.map(number => {
+        if (!Number.isInteger(number) || number < 1 || number > letters.length) {
+            throw new Error("Число не відповідає жодній літері алфавіту.");
+        }
+
+        return letters[number - 1];
+    }).join("");
+}
+
+function validateRsaParameters(exponent, m) {
+    if (!Number.isSafeInteger(exponent) || exponent < 1) {
+        throw new Error("Ключ повинен бути додатним цілим числом.");
+    }
+
+    if (!Number.isSafeInteger(m) || m < 2) {
+        throw new Error("Модуль шифрування повинен бути цілим числом не менше 2.");
+    }
 }
 
 function mod(a, m) {

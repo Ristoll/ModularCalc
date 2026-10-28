@@ -20,6 +20,8 @@ const isPrimeBtn = document.getElementById("is-prime-btn");
 const largestPrimeBtn = document.getElementById("largest-prime-btn");
 const findGeneratorsBtn = document.getElementById("find-generators-btn");
 const diffieHelmanBtn = document.getElementById("diffie-helman-btn");
+const rsaKeyPairsBtn = document.getElementById("rsa-key-pairs-btn");
+const rsaEncodingBtn = document.getElementById("rsa-encoding-btn");
 
 clearBtn.addEventListener("click", () => {
     modulus.value = null;
@@ -147,6 +149,44 @@ findGeneratorsBtn.addEventListener("click", () => {
 
 diffieHelmanBtn.addEventListener("click", () => {
     window.location.href = "./diffie-hellman.html";
+});
+
+rsaKeyPairsBtn.addEventListener("click", () => {
+    const n = Number(modulus.value);
+
+    if (modulus.value.trim() === "") {
+        errorMessage.textContent = "Введіть модуль n.";
+        return;
+    }
+
+    if (!Number.isInteger(n) || n < 2) {
+        errorMessage.textContent =
+            "Модуль n має бути цілим числом не меншим за 2.";
+        return;
+    }
+
+    try {
+        const result = operations.getRsaKeyPairs(n);
+
+        errorMessage.textContent = "";
+
+        logger.log(n, null, "Кількість пар ключів", result.count);
+
+        result.pairs.slice(0, 6).forEach((pair, index) => {
+            logger.log(
+                pair.privateKey,
+                pair.publicKey,
+                `Пара ключів ${index + 1}`,
+                `x = ${pair.privateKey}, y = ${pair.publicKey}`
+            );
+        });
+    } catch (error) {
+        errorMessage.textContent = error.message;
+    }
+});
+
+rsaEncodingBtn.addEventListener("click", () => {
+    window.location.href = "./rsa.html";
 });
 
 function getValues() {

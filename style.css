@@ -18,30 +18,30 @@ body {
     gap: 20px;
 }
 
-#common-btns, #inversion-btns{
+#common-btns, #inversion-btns, #other-op-btns{
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-.clients {
+.clients, .blocks {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 50px;
 }
 
-.client {
+.client, .block {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.client label {
+.client label, .block label {
     display: block;
 }
 
-.client input {
+.client input, .block input {
     display: block;
     width: 100%;
     box-sizing: border-box;
