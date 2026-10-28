@@ -240,6 +240,77 @@ export function isPrime(p) {
     return true;
 }
 
+export function getGenerators(p) {
+    if (!Number.isInteger(p) || p < 3) {
+        throw new Error("Модуль має бути цілим числом p >= 3");
+    }
+
+    if (!isPrime(p)) {
+        throw new Error("Модуль p повинен бути простим числом");
+    }
+
+    const order = p - 1;
+
+    const primeFactors = [...primeFactorization(order).keys()];
+
+    const generators = [];
+
+    for (let g = 2; g < p; g++) {
+        const isGenerator = primeFactors.every(q =>
+            modPow(g, order / q, p) !== 1
+        );
+
+        if (isGenerator) {
+            generators.push(g);
+        }
+    }
+
+    return {
+        order,
+        generators,
+        count: getPrimeNumAmount(order),
+        primeFactors
+    };
+}
+
+export function diffieHellman(p, g, A, B) {
+    if (![p, g, A, B].every(Number.isSafeInteger)) {
+        throw new Error("Усі значення мають бути цілими числами.");
+    }
+
+    if (!isPrime(p)) {
+        throw new Error("Число p повинно бути простим.");
+    }
+
+    if (g < 2 || g >= p) {
+        throw new Error("Генератор g повинен бути в межах від 2 до p - 1.");
+    }
+
+    if (A < 1 || B < 1) {
+        throw new Error("Секретні числа A і B повинні бути додатними.");
+    }
+
+    const generatorData = getGenerators(p);
+
+    if (!generatorData.generators.includes(g)) {
+        throw new Error("Число g не є генератором для заданого p.");
+    }
+
+    const rA = modPow(g, A, p);
+    const rB = modPow(g, B, p);
+
+    const keyA = modPow(rB, A, p);
+    const keyB = modPow(rA, B, p);
+
+    return {
+        rA,
+        rB,
+        keyA,
+        keyB,
+        keysMatch: keyA === keyB
+    };
+}
+
 function mod(a, m) {
     return ((a % m) + m) % m;
 }

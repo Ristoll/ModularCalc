@@ -23,3 +23,26 @@ body {
     flex-direction: column;
     gap: 5px;
 }
+
+.clients {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.client {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.client label {
+    display: block;
+}
+
+.client input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}

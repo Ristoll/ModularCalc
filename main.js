@@ -17,7 +17,10 @@ const primeBtn = document.getElementById("prime-btn");
 const primeAmountBtn = document.getElementById("prime-amount-btn");
 const multiplicationInverseBtn = document.getElementById("mult-inverse-btn");
 const isPrimeBtn = document.getElementById("is-prime-btn");
-const largestPrimeBtn = document.getElementById("largest-prime-btn")
+const largestPrimeBtn = document.getElementById("largest-prime-btn");
+const findGeneratorsBtn = document.getElementById("find-generators-btn");
+const diffieHelmanBtn = document.getElementById("diffie-helman-btn");
+
 clearBtn.addEventListener("click", () => {
     modulus.value = null;
     modulus.textContent = null;
@@ -104,6 +107,48 @@ largestPrimeBtn.addEventListener("click", () => {
     const result = operations.generatePrime(a);
     logger.log(a, null, "largestPrime", result);
 })
+
+findGeneratorsBtn.addEventListener("click", () => {
+    if (modulus.value.trim() === "") {
+        errorMessage.textContent = "Введіть модуль p.";
+        return;
+    }
+
+    const p = Number(modulus.value);
+
+    if (!Number.isInteger(p) || p < 3) {
+        errorMessage.textContent =
+            "Модуль p має бути цілим числом не меншим за 3.";
+        return;
+    }
+
+    try {
+        const result = operations.getGenerators(p);
+
+        errorMessage.textContent = "";
+
+        logger.log(p, null, "Порядок групи", result.order);
+        logger.log(
+            p,
+            null,
+            "Генератори",
+            result.generators.join(", ")
+        );
+        logger.log(
+            p,
+            null,
+            "Кількість генераторів",
+            result.count
+        );
+    } catch (error) {
+        errorMessage.textContent = error.message;
+    }
+});
+
+diffieHelmanBtn.addEventListener("click", () => {
+    window.location.href = "./diffie-hellman.html";
+});
+
 function getValues() {
     return {
         a: Number(firstNum.value),
