@@ -15,6 +15,7 @@ const addInverseBtn = document.getElementById("add-inverse-btn");
 const nsdBtn = document.getElementById("nsd-btn");
 const primeBtn = document.getElementById("prime-btn");
 const primeAmountBtn = document.getElementById("prime-amount-btn");
+const coprimesBtn = document.getElementById("coprimes-btn");
 const multiplicationInverseBtn = document.getElementById("mult-inverse-btn");
 const isPrimeBtn = document.getElementById("is-prime-btn");
 const largestPrimeBtn = document.getElementById("largest-prime-btn");
@@ -22,6 +23,7 @@ const findGeneratorsBtn = document.getElementById("find-generators-btn");
 const diffieHelmanBtn = document.getElementById("diffie-helman-btn");
 const rsaKeyPairsBtn = document.getElementById("rsa-key-pairs-btn");
 const rsaEncodingBtn = document.getElementById("rsa-encoding-btn");
+const elGamalBtn = document.getElementById("elGamal-btn");
 
 clearBtn.addEventListener("click", () => {
     modulus.value = null;
@@ -101,6 +103,13 @@ isPrimeBtn.addEventListener("click", () => {
     if(!validateValue()) return;
     const result = operations.isPrime(a);
     logger.log(a, null, "isPrime", result);
+})
+
+coprimesBtn.addEventListener("click", () => {
+    const a = Number(firstNum.value);
+    if(!validateValue()) return;
+    const result = operations.getCoprimeNumbers(a);
+    logger.log(a, null, "coprimes", result.numbers);
 })
 
 largestPrimeBtn.addEventListener("click", () => {
@@ -187,6 +196,10 @@ rsaKeyPairsBtn.addEventListener("click", () => {
 
 rsaEncodingBtn.addEventListener("click", () => {
     window.location.href = "./rsa.html";
+});
+
+elGamalBtn.addEventListener("click", () => {
+    window.location.href = "./elGamal.html";
 });
 
 function getValues() {

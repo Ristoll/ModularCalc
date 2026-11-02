@@ -367,6 +367,101 @@ function validateRsaParameters(exponent, m) {
     }
 }
 
+export function getCoprimeNumbers(n) {
+    if (!Number.isInteger(n) || n < 2) {
+        throw new Error("Число n має бути цілим числом >= 2");
+    }
+
+    const numbers = [];
+
+    for (let i = 1; i < n; i++) {
+        if (getNSD(i, n) === 1) {
+            numbers.push(i);
+        }
+    }
+
+    return {
+        numbers
+    };
+}
+
+// Генерація відкритої та закритої частин ключа Ель Гамаля
+export function generateElGamalKeys(p, g, x) {
+    if (!isPrime(p)) {
+        throw new Error("Модуль p повинен бути простим числом.");
+    }
+
+    if (!getGenerators(p).generators.includes(g)) {
+        throw new Error("Число g повинно бути генератором групи.");
+    }
+
+    if (!Number.isInteger(x) || x <= 1 || x >= p - 1) {
+        throw new Error("Закритий ключ повинен задовольняти умову 1 < x < p - 1.");
+    }
+
+    const y = modPow(g, x, p);
+
+    return {
+        privateKey: x,
+        publicKey: y
+    };
+}
+
+// Шифрування однієї літери
+export function elGamalEncrypt(M, p, g, y, k) {
+    if (!Number.isInteger(M) || M < 1 || M >= p) {
+        throw new Error("Повідомлення повинно належати діапазону від 1 до p - 1.");
+    }
+
+    if (!Number.isInteger(k) || k <= 1 || k >= p - 1) {
+        throw new Error("Сесійний ключ повинен задовольняти умову 1 < k < p - 1.");
+    }
+
+    const a = modPow(g, k, p);
+    const b = mod(modPow(y, k, p) * M, p);
+
+    return { a, b };
+}
+
+// Розшифрування однієї літери
+export function elGamalDecrypt(a, b, p, x) {
+    if (!Number.isInteger(a) || a < 1 || a >= p ||
+        !Number.isInteger(b) || b < 0 || b >= p) {
+        throw new Error("Некоректні параметри шифротексту.");
+    }
+
+    const sharedKey = modPow(a, x, p);
+    const inverse = multiplicationInverse(sharedKey, p);
+
+    return mod(b * inverse, p);
+}
+
+// Шифрування повідомлення з трьох літер
+export function elGamalEncryptMessage(numbers, p, g, y, sessionKeys) {
+    if (numbers.length !== 3 || sessionKeys.length !== 3) {
+        throw new Error("Потрібно передати три літери та три сесійні ключі.");
+    }
+
+    if (new Set(sessionKeys).size !== 3) {
+        throw new Error("Сесійні ключі повинні бути різними.");
+    }
+
+    return numbers.map((M, index) => ({
+        session: index + 1,
+        message: M,
+        sessionKey: sessionKeys[index],
+        ...elGamalEncrypt(M, p, g, y, sessionKeys[index])
+    }));
+}
+
+// Розшифрування повідомлення з трьох літер
+export function elGamalDecryptMessage(encryptedMessages, p, x) {
+    return encryptedMessages.map(item => ({
+        session: item.session,
+        message: elGamalDecrypt(item.a, item.b, p, x)
+    }));
+}
+
 function mod(a, m) {
     return ((a % m) + m) % m;
 }
